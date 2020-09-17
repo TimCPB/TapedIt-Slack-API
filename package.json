@@ -6,7 +6,8 @@
   "scripts": {
     "start:dev": "nodemon",
     "build": "rimraf ./dist && tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "cy:run": "cypress run"
   },
   "repository": {
     "type": "git",

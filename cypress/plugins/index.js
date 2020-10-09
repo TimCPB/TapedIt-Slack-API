@@ -11,6 +11,37 @@
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
+const fs = require("fs");
+const path = require("path");
+const wp = require("@cypress/webpack-preprocessor");
+
+const webpackOptions = {
+  watch: true,
+  resolve: {
+    extensions: [".ts", ".js", ".mjs"]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: "javascript/auto"
+      },
+      {
+        test: /\.ts$/,
+        exclude: [/node_modules/],
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              transpileOnly: true
+            }
+          }
+        ]
+      }
+    ]
+  }
+};
 
 /**
  * @type {Cypress.PluginConfig}
@@ -18,4 +49,13 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+  on("task", {
+    getSchema() {
+      return fs.readFileSync(
+        path.resolve(__dirname, "../../src/mocks_schemas.graphql"),
+        "utf8"
+      );
+    }
+  });
+  on("file:preprocessor", wp({ webpackOptions }));
 }

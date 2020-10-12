@@ -17,15 +17,15 @@ describe("Server set up", () => {
         }
       }
     `;
-    const mutation = `mutation {
-      createUser(slackID: "Tim"){
-        id
-        slackID
-        senderNotes
-        receiverNotes
-      }
+    // const mutation = `mutation {
+    //   createUser(slackID: "Tim"){
+    //     id
+    //     slackID
+    //     senderNotes
+    //     receiverNotes
+    //   }
       
-    }`
+    // }`
     cy.request({
       method: "post",
       url: "http://localhost:4000/graphql/", // graphql endpoint

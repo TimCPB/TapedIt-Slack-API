@@ -1,9 +1,10 @@
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type Query {
     notes: [Note]
     users: [User]
+    test: String
   }
 
   type Note {
@@ -22,10 +23,14 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createNote(sender: String!, receiver: String!, status: String!, url: String!): Note!
+    createNote(
+      sender: String!
+      receiver: String!
+      status: String!
+      url: String!
+    ): Note!
     createUser(slackID: String!): User!
   }
-
 `;
 
 export default typeDefs;

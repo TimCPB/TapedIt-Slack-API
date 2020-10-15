@@ -26,15 +26,37 @@ const slackQuery = (
   response.send({
     // "channel": 'C017Q15T97T',
     // "response_type": "in_channel",
-    // "text": "Hello TapedIt Team"
     "blocks": [
       {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": `Hey <@${user}>\n<https://tapedit.netlify.app/|Click *here* to tape your message>\n:loud_sound:`
+          "text": `Hey <@${user}> :loud_sound:`
+        },
+        "accessory": {
+          "action_id": "text1234",
+          "type": "multi_users_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Select recipient"
+          }
         }
-      }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Tape your note",
+            },
+            "url": "https://tapedit.netlify.app",
+            "style": "primary",
+            "value": "click_me_123"
+          },
+        ]
+      },
     ]
   })
   // console.log(request.body);

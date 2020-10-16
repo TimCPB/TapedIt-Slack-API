@@ -5,6 +5,7 @@ describe("Server set up", () => {
         schema,
       });
     });
+    cy.exec("yarn run db:drop");
   });
 
   it("connects to the graphql server and prints", () => {
@@ -12,28 +13,19 @@ describe("Server set up", () => {
     const query = `
       {
         users{
-          id,
           slackID
         }
       }
     `;
-    const mutation = `mutation {
-      createUser(slackID: "Chris"){
-        id
-        slackID
-        senderNotes
-        receiverNotes
-      }
-    }
-    `;
+    cy.task("addUser", { slackID: "TestSender" });
+    cy.task("addUser", { slackID: "TestReceiver" });
     cy.request({
       method: "post",
       url: "http://localhost:4000/graphql/", // graphql endpoint
       body: { query }, // or { query: query } depending if you are writing with es6
       failOnStatusCode: false, // not a must but in case the fail code is not 200 / 400
     }).then((res) => {
-      console.log(res);
-      cy.log(res.body.data);
+      expect(res.body.data.users[0].slackID).to.equal("TestSender");
     });
   });
 });

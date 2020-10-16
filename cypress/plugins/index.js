@@ -14,18 +14,20 @@
 const fs = require("fs");
 const path = require("path");
 const wp = require("@cypress/webpack-preprocessor");
+const mongoose = require("mongoose");
+import { User } from "../../src/models/user";
 
 const webpackOptions = {
   watch: true,
   resolve: {
-    extensions: [".ts", ".js", ".mjs"]
+    extensions: [".ts", ".js", ".mjs"],
   },
   module: {
     rules: [
       {
         test: /\.mjs$/,
         include: /node_modules/,
-        type: "javascript/auto"
+        type: "javascript/auto",
       },
       {
         test: /\.ts$/,
@@ -34,13 +36,13 @@ const webpackOptions = {
           {
             loader: "ts-loader",
             options: {
-              transpileOnly: true
-            }
-          }
-        ]
-      }
-    ]
-  }
+              transpileOnly: true,
+            },
+          },
+        ],
+      },
+    ],
+  },
 };
 
 /**
@@ -55,7 +57,27 @@ module.exports = (on, config) => {
         path.resolve(__dirname, "../../src/mocks_schemas.graphql"),
         "utf8"
       );
-    }
+    },
   });
+
   on("file:preprocessor", wp({ webpackOptions }));
-}
+  on("task", {
+    addUser(slackIDObj) {
+      return new Promise((resolve) => {
+        mongoose.connect(
+          "mongodb://localhost/test",
+          { useNewUrlParser: true, useUnifiedTopology: true },
+          (err) => {
+            const { slackID } = slackIDObj;
+            const senderNotes = [];
+            const receiverNotes = [];
+            const user = new User({ slackID, senderNotes, receiverNotes });
+            user.save((err) => {
+              resolve("done");
+            });
+          }
+        );
+      });
+    },
+  });
+};
